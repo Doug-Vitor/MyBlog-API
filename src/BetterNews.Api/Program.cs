@@ -30,6 +30,7 @@ applicationBuilder.Services
 applicationBuilder.Services.AddScoped<IRoleRepository, RoleRepository>();
 applicationBuilder.Services.Configure<SecretsConfiguration>(applicationBuilder.Configuration.GetSection(nameof(SecretsConfiguration)));
 applicationBuilder.Services.AddScoped<ITokenServices, TokenServices>();
+applicationBuilder.Services.AddSingleton<SeedingServices>();
 
 WebApplication application = applicationBuilder.Build();
 
@@ -43,4 +44,5 @@ application.UseAuthorization();
 
 application.MapControllers();
 
+await application.CreateRolesAsync();
 application.Run();

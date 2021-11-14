@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BetterNews.ApplicationCore\BetterNews.ApplicationCore.csproj" />
+    <ProjectReference Include="..\BetterNews.Infrastructure\BetterNews.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
