@@ -1,18 +1,46 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+WebApplicationBuilder applicationBuilder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+applicationBuilder.Services.AddControllers();
+applicationBuilder.Services.AddEndpointsApiExplorer();
+applicationBuilder.Services.AddSwaggerGen();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+applicationBuilder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options => {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(applicationBuilder.Configuration.GetSection(nameof(SecretsConfiguration)).Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
-app.UseHttpsRedirection();
+// builder.Services.AddDbContext<AuthenticationContext>();
+applicationBuilder.Services.AddScoped<IRoleRepository, RoleRepository>();
+applicationBuilder.Services.Configure<SecretsConfiguration>(applicationBuilder.Configuration.GetSection(nameof(SecretsConfiguration)));
+applicationBuilder.Services.AddScoped<ITokenServices, TokenServices>();
 
-app.UseAuthorization();
+WebApplication application = applicationBuilder.Build();
 
-app.MapControllers();
+application.UseSwagger();
+application.UseSwaggerUI();
 
-app.Run();
+application.UseHttpsRedirection();
+
+application.UseAuthentication();
+application.UseAuthorization();
+
+application.MapControllers();
+
+application.Run();
