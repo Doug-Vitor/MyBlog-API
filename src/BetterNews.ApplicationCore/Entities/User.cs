@@ -9,6 +9,6 @@
     {
     }
 
-    public User(int id, string username, string passwordHash, string email, ICollection<int> rolesId) 
-        : base(id) => (Username, PasswordHash, Email, RolesId) = (username, passwordHash, email, rolesId);
+    public User(string username, string passwordHash, string email, ICollection<int> rolesId)
+        => (Username, PasswordHash, Email, RolesId) = (username, passwordHash, email, rolesId);
 }

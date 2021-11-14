@@ -6,5 +6,5 @@
     {
     }
 
-    public Role(int id, string name) : base(id) => Name = name;
+    public Role(string name) => Name = name;
 }
