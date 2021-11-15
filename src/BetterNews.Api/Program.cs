@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -7,6 +8,9 @@ WebApplicationBuilder applicationBuilder = WebApplication.CreateBuilder(args);
 applicationBuilder.Services.AddControllers();
 applicationBuilder.Services.AddEndpointsApiExplorer();
 applicationBuilder.Services.AddSwaggerGen();
+applicationBuilder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+ConfigurationManager configurations = applicationBuilder.Configuration;
 
 applicationBuilder.Services
     .AddAuthentication(options =>
@@ -20,17 +24,18 @@ applicationBuilder.Services
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(applicationBuilder.Configuration.GetSection(nameof(SecretsConfiguration)).Value)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configurations.GetSection(nameof(SecretsConfiguration)).Value)),
             ValidateIssuer = false,
             ValidateAudience = false
         };
     });
 
-// builder.Services.AddDbContext<AuthenticationContext>();
+applicationBuilder.Services.AddDbContext<AuthenticationContext>(options => options.UseSqlServer(configurations.GetConnectionString("Accounts")));
 applicationBuilder.Services.AddScoped<IRoleRepository, RoleRepository>();
-applicationBuilder.Services.Configure<SecretsConfiguration>(applicationBuilder.Configuration.GetSection(nameof(SecretsConfiguration)));
+applicationBuilder.Services.AddScoped<IUserRepository, UserRepository>();
+applicationBuilder.Services.Configure<SecretsConfiguration>(configurations.GetSection(nameof(SecretsConfiguration)));
 applicationBuilder.Services.AddScoped<ITokenServices, TokenServices>();
-applicationBuilder.Services.AddSingleton<SeedingServices>();
+applicationBuilder.Services.AddScoped<SeedingServices>();
 
 WebApplication application = applicationBuilder.Build();
 

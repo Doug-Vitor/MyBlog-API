@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -8,8 +9,8 @@ public class TokenServices : ITokenServices
     private readonly IRoleRepository _roleRepository;
     private readonly SecretsConfiguration _secretsConfiguration;
 
-    public TokenServices(IRoleRepository roleRepository, SecretsConfiguration secretsConfiguration) =>
-        (_roleRepository, _secretsConfiguration) = (roleRepository, secretsConfiguration);
+    public TokenServices(IRoleRepository roleRepository, IOptions<SecretsConfiguration> secretsConfiguration) =>
+        (_roleRepository, _secretsConfiguration) = (roleRepository, secretsConfiguration.Value);
 
     public async Task<string> GenerateTokenAsync(User user)
     {
@@ -17,9 +18,9 @@ public class TokenServices : ITokenServices
         var key = Encoding.ASCII.GetBytes(_secretsConfiguration.Secret);
 
         List<Claim> claims = new() { new(ClaimTypes.Name, user.Username) };
-        IEnumerable<Role> roles = await _roleRepository.GetByUserIdAsync(user.Id);
+        IEnumerable<Role> userRoles = await _roleRepository.GetByUserIdAsync(user.Id);
 
-        foreach (Role role in roles)
+        foreach (Role role in userRoles)
         {
             claims.Add(new(ClaimTypes.Role, role.Name));
         }
