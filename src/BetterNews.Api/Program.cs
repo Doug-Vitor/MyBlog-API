@@ -1,3 +1,4 @@
+using BetterNews.Infrastructure.Data.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,11 +31,17 @@ applicationBuilder.Services
         };
     });
 
+applicationBuilder.Services.AddHttpContextAccessor();
+applicationBuilder.Services.AddSingleton<HttpContextAccessorHelper>();
+
 applicationBuilder.Services.AddDbContext<AuthenticationContext>(options => options.UseSqlServer(configurations.GetConnectionString("Accounts")));
 applicationBuilder.Services.AddScoped<IRoleRepository, RoleRepository>();
 applicationBuilder.Services.AddScoped<IUserRepository, UserRepository>();
+applicationBuilder.Services.AddScoped<IUsersRolesRepository, UsersRolesRepository>();
+
 applicationBuilder.Services.Configure<SecretsConfiguration>(configurations.GetSection(nameof(SecretsConfiguration)));
 applicationBuilder.Services.AddScoped<ITokenServices, TokenServices>();
+
 applicationBuilder.Services.AddScoped<SeedingServices>();
 
 WebApplication application = applicationBuilder.Build();

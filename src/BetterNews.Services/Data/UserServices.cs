@@ -5,8 +5,9 @@ public class UserServices : IUserServices
 {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
+    private readonly HttpContextAccessorHelper _contextAccessor;
 
-    public UserServices(IUserRepository userRepository, IMapper mapper) => (_userRepository, _mapper) = (userRepository, mapper);
+    public UserServices(IUserRepository userRepository, IMapper mapper, HttpContextAccessorHelper contextAccessor) => (_userRepository, _mapper, _contextAccessor) = (userRepository, mapper, contextAccessor);
 
     public async Task<UserViewModel> GetByIdAsync(int id)
     {
@@ -30,11 +31,14 @@ public class UserServices : IUserServices
         Guard.Against.Null(signInModel, nameof(signInModel), "Por favor, insira dados válidos.");
         Guard.Against.Null(signInModel.Username_Email, nameof(signInModel.Username_Email), "Por favor, insira um nome de usuário/e-mail válido.");
         Guard.Against.Null(signInModel.Password, nameof(signInModel.Password), "Por favor, insira uma senha válida.");
-    
+
         signInModel.Password = signInModel.Password.ToHash();
         await _userRepository.SignInAsync(signInModel);
     }
 
-    // Loading
-    public Task UpdateAsync(int userId, UserInputModel inputModel) => throw new NotImplementedException();
+    public async Task UpdateAsync(int userId, UserInputModel inputModel)
+    {
+        if (_contextAccessor.GetAuthenticatedUserId() == userId) await _userRepository.UpdateAsync(userId, inputModel);
+        else throw new UnauthorizedAccessException("Você não possui permissão para acessar esse conteúdo.");
+    }
 }
