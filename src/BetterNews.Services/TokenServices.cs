@@ -15,15 +15,13 @@ public class TokenServices : ITokenServices
     public async Task<string> GenerateTokenAsync(User user)
     {
         JwtSecurityTokenHandler tokenHandler = new();
-        var key = Encoding.ASCII.GetBytes(_secretsConfiguration.Secret);
+        byte[] key = Encoding.ASCII.GetBytes(_secretsConfiguration.Secret);
 
         List<Claim> claims = new() { new(ClaimTypes.Name, user.Username) };
         IEnumerable<Role> userRoles = await _roleRepository.GetByUserIdAsync(user.Id);
 
         foreach (Role role in userRoles)
-        {
             claims.Add(new(ClaimTypes.Role, role.Name));
-        }
 
         SecurityTokenDescriptor tokenDescriptor = new()
         {
@@ -32,7 +30,7 @@ public class TokenServices : ITokenServices
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
 }

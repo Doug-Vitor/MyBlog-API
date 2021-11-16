@@ -5,6 +5,7 @@ public class UserRepository : IUserRepository
 {
     private readonly AuthenticationContext _context;
     private readonly IRoleRepository _roleRepository;
+    private readonly IUsersRolesRepository _usersRoleRepository;
     private readonly IMapper _mapper;
 
     public UserRepository(AuthenticationContext context, IMapper mapper) => (_context, _mapper) = (context, mapper);
@@ -15,14 +16,15 @@ public class UserRepository : IUserRepository
     {
         User user = _mapper.Map<User>(inputModel);
 
-        if (_context.Users.Any(prop => prop.Username == user.Username)) throw new FieldInUseException(nameof(user.Username));
+        if (_context.Users.Any(prop => prop.Username == user.Username)) throw new FieldInUseException("Nome de usuário");
         if (_context.Users.Any(prop => prop.Email == user.Email)) throw new FieldInUseException(nameof(user.Email));
 
-        Role userRole = await _roleRepository.GetByNameAsync("User");
-        user.AddRole(userRole.Id);
 
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
+
+        int userRoleId = (await _roleRepository.GetByNameAsync("User")).Id;
+        await _usersRoleRepository.InsertAsync(user.Id, userRoleId);
     }
 
     public async Task SignInAsync(UserSignInModel signInModel)
