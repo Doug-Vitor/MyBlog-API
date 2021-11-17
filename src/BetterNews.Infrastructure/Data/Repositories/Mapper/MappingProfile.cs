@@ -6,7 +6,7 @@ namespace BetterNews.Infrastructure.Data.Repositories.Mapper
     {
         public MappingProfile()
         {
-            CreateMap<UserInputModel, User>().ReverseMap();
+            CreateMap<CreateUserInputModel, User>().ReverseMap();
 
             CreateMap<UserViewModel, User>().ReverseMap();
         }

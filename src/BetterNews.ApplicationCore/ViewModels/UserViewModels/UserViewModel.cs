@@ -1,6 +1,10 @@
-﻿public class UserViewModel
+﻿using System.ComponentModel.DataAnnotations;
+
+public class UserViewModel
 {
     public string Username { get; set; }
+
+    [DataType(DataType.EmailAddress)]
     public string Email { get; set; }
 
     public UserViewModel()

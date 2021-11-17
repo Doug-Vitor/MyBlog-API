@@ -15,7 +15,7 @@ public class UserServices : IUserServices
         return _mapper.Map<UserViewModel>(await _userRepository.GetByIdAsync(id)) ?? throw new NotFoundException("Não foi possível encontrar um usuário correspondente ao ID fornecido.");
     }
 
-    public async Task SignUpAsync(UserInputModel inputModel)
+    public async Task SignUpAsync(CreateUserInputModel inputModel)
     {
         Guard.Against.Null(inputModel, nameof(inputModel), "Por favor, insira dados válidos.");
         Guard.Against.Null(inputModel.Username, nameof(inputModel.Username), "Por favor, insira um nome de usuário válido.");
@@ -26,7 +26,7 @@ public class UserServices : IUserServices
         await _userRepository.SignUpAsync(inputModel);
     }
 
-    public async Task SignInAsync(UserSignInModel signInModel)
+    public async Task SignInAsync(SignInUserModel signInModel)
     {
         Guard.Against.Null(signInModel, nameof(signInModel), "Por favor, insira dados válidos.");
         Guard.Against.Null(signInModel.Username_Email, nameof(signInModel.Username_Email), "Por favor, insira um nome de usuário/e-mail válido.");
@@ -36,7 +36,7 @@ public class UserServices : IUserServices
         await _userRepository.SignInAsync(signInModel);
     }
 
-    public async Task UpdateAsync(int userId, UserInputModel inputModel)
+    public async Task UpdateAsync(int userId, CreateUserInputModel inputModel)
     {
         if (_contextAccessor.GetAuthenticatedUserId() == userId) await _userRepository.UpdateAsync(userId, inputModel);
         else throw new UnauthorizedAccessException("Você não possui permissão para acessar esse conteúdo.");
