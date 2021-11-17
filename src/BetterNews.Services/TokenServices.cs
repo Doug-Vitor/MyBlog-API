@@ -17,7 +17,11 @@ public class TokenServices : ITokenServices
         JwtSecurityTokenHandler tokenHandler = new();
         byte[] key = Encoding.ASCII.GetBytes(_secretsConfiguration.Secret);
 
-        List<Claim> claims = new() { new(ClaimTypes.Name, user.Username) };
+        List<Claim> claims = new()
+        {
+            new(ClaimTypes.Name, user.Username),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString())
+        };
         IEnumerable<Role> userRoles = await _roleRepository.GetByUserIdAsync(user.Id);
 
         foreach (Role role in userRoles)

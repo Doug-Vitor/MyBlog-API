@@ -12,7 +12,7 @@ public class UserRepository : IUserRepository
 
     public Task<User> GetByIdAsync(int id) => _context.Users.FirstOrDefaultAsync(prop => prop.Id == id) ?? throw new NotFoundException("Não foi possível encontrar um usuário correspondente ao ID fornecido.");
 
-    public async Task SignUpAsync(UserInputModel inputModel)
+    public async Task SignUpAsync(CreateUserInputModel inputModel)
     {
         User user = _mapper.Map<User>(inputModel);
 
@@ -27,13 +27,13 @@ public class UserRepository : IUserRepository
         await _usersRoleRepository.InsertAsync(user.Id, userRoleId);
     }
 
-    public async Task SignInAsync(UserSignInModel signInModel)
+    public async Task SignInAsync(SignInUserModel signInModel)
     {
         bool result = await _context.Users.AnyAsync(prop => prop.Username == signInModel.Username_Email || prop.Email == signInModel.Username_Email && prop.PasswordHash == signInModel.Password);
         if (result is false) throw new SignInFailException();
     }
 
-    public async Task UpdateAsync(int userId, UserInputModel inputModel)
+    public async Task UpdateAsync(int userId, CreateUserInputModel inputModel)
     {
         User user = _mapper.Map<User>(inputModel);
 
