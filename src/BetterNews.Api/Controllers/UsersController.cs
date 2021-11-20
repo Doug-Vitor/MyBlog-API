@@ -46,7 +46,7 @@ namespace BetterNews.Api.Controllers
         /// </summary>
         /// <param name="inputModel">Os dados do usuário a ser cadastrado</param>
         /// <returns></returns>
-        [ProducesResponseType(201)]
+        [ProducesResponseType(201, Type = typeof(LoginResult))]
         [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
         [ProducesResponseType(500, Type = typeof(ErrorViewModel))]
         [HttpPost]
@@ -57,7 +57,7 @@ namespace BetterNews.Api.Controllers
                 if (ModelState.IsValid)
                 {
                     int userId = await _userServices.SignUpAsync(inputModel);
-                    return CreatedAtAction(nameof(GetById), new { id = userId }, new { user = _mapper.Map<UserViewModel>(inputModel), token = await _tokenServices.GenerateTokenAsync(userId) });
+                    return CreatedAtAction(nameof(GetById), new { id = userId }, new LoginResult(inputModel.Username, await _tokenServices.GenerateTokenAsync(userId)));
                 }
             }
             catch (ArgumentNullException error)
@@ -77,7 +77,7 @@ namespace BetterNews.Api.Controllers
         /// </summary>
         /// <param name="signInModel">Os dados do usuário a ser logado</param>
         /// <returns></returns>
-        [ProducesResponseType(200)]
+        [ProducesResponseType(201, Type = typeof(LoginResult))]
         [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] SignInUserModel signInModel)
@@ -87,7 +87,7 @@ namespace BetterNews.Api.Controllers
                 if (ModelState.IsValid)
                 {
                     int? userId = await _userServices.SignInAsync(signInModel);
-                    return Ok(new { user = _mapper.Map<UserViewModel>(signInModel), token = await _tokenServices.GenerateTokenAsync(userId) });
+                    return Ok(new LoginResult(signInModel.Username, await _tokenServices.GenerateTokenAsync(userId)));
                 }
             }
             catch (ArgumentNullException error)
