@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 WebApplicationBuilder applicationBuilder = WebApplication.CreateBuilder(args);
@@ -48,6 +49,8 @@ applicationBuilder.Services.AddScoped<CrossCuttingRepository>();
 applicationBuilder.Services.AddScoped<ITokenServices, TokenServices>();
 
 applicationBuilder.Services.AddScoped<SeedingServices>();
+
+applicationBuilder.Services.AddSwaggerGen(options => options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml")));
 
 WebApplication application = applicationBuilder.Build();
 

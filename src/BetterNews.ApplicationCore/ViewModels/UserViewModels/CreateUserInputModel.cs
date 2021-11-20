@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
-public class CreateUserInputModel
+public class CreateUserInputModel : BaseUserViewModel
 {
-    [Required(ErrorMessage = "Campo {0} é obrigatório.")]
-    [StringLength(75, MinimumLength = 5, ErrorMessage = "Campo {0} deve conter entre {2} e {1} caracteres.")]
-    public string Username { get; set; }
-
+    [DisplayName("Senha")]
     [Required(ErrorMessage = "Campo {0} é obrigatório.")]
     [DataType(DataType.Password)]
     public string Password { get; set; }
@@ -18,7 +16,7 @@ public class CreateUserInputModel
     {
     }
 
-    public CreateUserInputModel(string username, string password) => (Username, Password) = (username, password); 
+    public CreateUserInputModel(string username, string password) : base(username) => Password = password; 
 
-    public CreateUserInputModel(string username, string password, string email) => (Username, Password, Email) = (username, password, email);
+    public CreateUserInputModel(string username, string password, string email) : base(username) => (Password, Email) = (password, email);
 }

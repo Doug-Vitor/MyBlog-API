@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
-public class SignInUserModel
+public class SignInUserModel : BaseUserViewModel
 {
-    [Required(ErrorMessage = "Campo {0} é obrigatório.")]
-    public string Username { get; set; }
-
+    [DisplayName("Senha")]
     [Required(ErrorMessage = "Campo {0} é obrigatório.")]
     [DataType(DataType.Password)]
     public string Password { get; set; }
@@ -13,5 +12,5 @@ public class SignInUserModel
     {
     }
 
-    public SignInUserModel(string username, string password) => (Username, Password) = (username, password);
+    public SignInUserModel(string username, string password) : base(username) => Password = password;
 }
