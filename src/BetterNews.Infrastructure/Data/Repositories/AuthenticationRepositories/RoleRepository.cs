@@ -7,9 +7,11 @@ public class RoleRepository : BaseRepository, IRoleRepository
 
     public RoleRepository(AuthenticationContext context, CrossCuttingRepository crossCuttingRepository) : base(context) => _crossCuttingRepository = crossCuttingRepository;
 
-    public async Task<Role> GetByIdAsync(int? id) => await Context.Roles.FirstOrDefaultAsync(prop => prop.Id == id);
+    public async Task<Role> GetByIdAsync(int? id) => await Context.Roles
+        .FirstOrDefaultAsync(prop => prop.Id == id);
 
-    public async Task<Role> GetByNameAsync(string roleName) => await Context.Roles.FirstOrDefaultAsync(prop => prop.Name == roleName);
+    public async Task<Role> GetByNameAsync(string roleName) => await Context.Roles
+        .FirstOrDefaultAsync(prop => prop.Name == roleName);
 
     public async Task<IEnumerable<Role>> GetByUserIdAsync(int? userId)
     {

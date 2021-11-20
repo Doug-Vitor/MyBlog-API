@@ -18,5 +18,6 @@ public class CreateUserInputModel : BaseUserViewModel
 
     public CreateUserInputModel(string username, string password) : base(username) => Password = password; 
 
-    public CreateUserInputModel(string username, string password, string email) : base(username) => (Password, Email) = (password, email);
+    public CreateUserInputModel(string username, string password, string email) : base(username) => 
+        (Password, Email) = (password, email);
 }

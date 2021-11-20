@@ -11,5 +11,6 @@ public class CrossCuttingRepository : BaseRepository
         (await Context.Roles.FirstOrDefaultAsync(prop => prop.Name == roleName)).Id;
 
     public async Task<IEnumerable<int>> GetUserRolesIdByUserIdAsync(int? userId) =>
-        (await Context.UsersRoles.Where(prop => prop.UserId == userId.Value).ToListAsync()).Select(prop => prop.RoleId);
+        (await Context.UsersRoles.Where(prop => prop.UserId == userId.Value).ToListAsync())
+        .Select(prop => prop.RoleId);
 }
