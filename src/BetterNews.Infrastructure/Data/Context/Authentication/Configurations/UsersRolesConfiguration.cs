@@ -5,7 +5,7 @@ public class UsersRolesConfiguration : IEntityTypeConfiguration<UsersRoles>
 {
     public void Configure(EntityTypeBuilder<UsersRoles> builder)
     {
-        builder.HasNoKey();
+        builder.HasKey(key => key.Id);
         builder.Property(prop => prop.UserId).IsRequired();
         builder.Property(prop => prop.RoleId).IsRequired();
     }

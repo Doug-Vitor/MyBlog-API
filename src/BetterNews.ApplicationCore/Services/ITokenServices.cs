@@ -1,4 +1,4 @@
 ﻿public interface ITokenServices
 {
-    Task<string> GenerateTokenAsync(User user);
+    Task<string> GenerateTokenAsync(int? userId);
 }

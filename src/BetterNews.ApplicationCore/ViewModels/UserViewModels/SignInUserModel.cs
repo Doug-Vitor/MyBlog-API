@@ -3,7 +3,7 @@
 public class SignInUserModel
 {
     [Required(ErrorMessage = "Campo {0} é obrigatório.")]
-    public string Username_Email { get; set; }
+    public string Username { get; set; }
 
     [Required(ErrorMessage = "Campo {0} é obrigatório.")]
     [DataType(DataType.Password)]
@@ -13,5 +13,5 @@ public class SignInUserModel
     {
     }
 
-    public SignInUserModel(string username_email, string password) => (Username_Email, Password) = (username_email, password);
+    public SignInUserModel(string username, string password) => (Username, Password) = (username, password);
 }

@@ -6,24 +6,28 @@ using System.Text;
 
 public class TokenServices : ITokenServices
 {
+    private readonly IUserServices _userServices;
     private readonly IRoleRepository _roleRepository;
     private readonly SecretsConfiguration _secretsConfiguration;
 
-    public TokenServices(IRoleRepository roleRepository, IOptions<SecretsConfiguration> secretsConfiguration) =>
-        (_roleRepository, _secretsConfiguration) = (roleRepository, secretsConfiguration.Value);
+    public TokenServices(IUserServices userServices, IRoleRepository roleRepository, IOptions<SecretsConfiguration> secretsConfiguration) =>
+        (_userServices, _roleRepository, _secretsConfiguration) = (userServices, roleRepository, secretsConfiguration.Value);
 
-    public async Task<string> GenerateTokenAsync(User user)
+    public async Task<string> GenerateTokenAsync(int? userId)
     {
+        UserViewModel userViewModel = await _userServices.GetByIdAsync(userId);
+
         JwtSecurityTokenHandler tokenHandler = new();
         byte[] key = Encoding.ASCII.GetBytes(_secretsConfiguration.Secret);
 
         List<Claim> claims = new()
         {
-            new(ClaimTypes.Name, user.Username),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString())
+            new(ClaimTypes.Name, userViewModel.Username),
+            new(ClaimTypes.Email, userViewModel.Email),
+            new(ClaimTypes.NameIdentifier, userId.Value.ToString())
         };
-        IEnumerable<Role> userRoles = await _roleRepository.GetByUserIdAsync(user.Id);
 
+        IEnumerable<Role> userRoles = await _roleRepository.GetByUserIdAsync(userId);
         foreach (Role role in userRoles)
             claims.Add(new(ClaimTypes.Role, role.Name));
 
