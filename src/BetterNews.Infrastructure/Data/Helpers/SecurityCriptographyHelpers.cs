@@ -7,6 +7,6 @@ public static class SecurityCriptographyHelpers
     {
         using HashAlgorithm algorithm = SHA256.Create();
         byte[] sourceBytes = Encoding.UTF8.GetBytes(source);
-        return BitConverter.ToString(algorithm.ComputeHash(sourceBytes));
+        return BitConverter.ToString(algorithm.ComputeHash(sourceBytes)).Replace("-", string.Empty);
     }
 }

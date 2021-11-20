@@ -3,21 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 public class UsersRolesRepository : BaseRepository, IUsersRolesRepository
 {
-    private readonly IRoleRepository _roleRepository;
+    private readonly CrossCuttingRepository _crossCuttingRepository;
 
-    public UsersRolesRepository(AuthenticationContext context, IRoleRepository roleRepository) : base(context) => _roleRepository = roleRepository;
+    public UsersRolesRepository(AuthenticationContext context, CrossCuttingRepository crossCuttingRepository) : base(context) => _crossCuttingRepository = crossCuttingRepository;
 
     public async Task<IEnumerable<UsersRoles>> GetByUserIdAsync(int userId) => await Context.UsersRoles.Where(prop => prop.UserId == userId).ToListAsync();
 
-    public async Task InsertDefaultAsync(int userId)
+    public async Task InsertDefaultAsync(int? userId)
     {
-        await Context.UsersRoles.AddAsync(new UsersRoles(userId, (await _roleRepository.GetByNameAsync("User")).Id));
+        await Context.UsersRoles.AddAsync(new UsersRoles(userId.Value, await _crossCuttingRepository.GetRoleIdByNameAsync("User")));
         await Context.SaveChangesAsync();
     }
 
-    public async Task InsertAsync(int userId, int roleId)
+    public async Task InsertAsync(int? userId, int roleId)
     {
-        await Context.UsersRoles.AddAsync(new UsersRoles(userId, roleId));
+        await Context.UsersRoles.AddAsync(new UsersRoles(userId.Value, roleId));
         await Context.SaveChangesAsync();
     }
 }

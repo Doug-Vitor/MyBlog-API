@@ -10,5 +10,6 @@ public class SeedingServices
     {
         if (await _authenticationContext.Roles.AnyAsync()) return;
         await _authenticationContext.Roles.AddRangeAsync(new Role[] { new Role("User"), new Role("Journalist") });
+        await _authenticationContext.SaveChangesAsync();
     }
 }

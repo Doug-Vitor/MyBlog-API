@@ -1,7 +1,7 @@
 ﻿public interface IUserServices
 {
-    Task<UserViewModel> GetByIdAsync(int id);
-    Task SignUpAsync(CreateUserInputModel inputModel);
-    Task SignInAsync(SignInUserModel inputModel);
-    Task UpdateAsync(int userId, CreateUserInputModel inputModel);
+    Task<UserViewModel> GetByIdAsync(int? id);
+    Task<int> SignUpAsync(CreateUserInputModel inputModel);
+    Task<int?> SignInAsync(SignInUserModel inputModel);
+    Task UpdateAsync(CreateUserInputModel inputModel);
 }

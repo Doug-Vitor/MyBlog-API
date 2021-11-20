@@ -2,10 +2,9 @@
 
 public static class ApplicationBuilderExtensions
 {
-    public static async Task<WebApplication> CreateRolesAsync(this WebApplication webApplication)
+    public static async Task CreateRolesAsync(this IHost host)
     {
-        SeedingServices seedingServices = webApplication.Services.GetRequiredService<SeedingServices>();
-        await seedingServices.CreateRolesAsync();
-        return webApplication;
+        using IServiceScope scope = host.Services.GetService<IServiceScopeFactory>().CreateScope();
+        await scope.ServiceProvider.GetRequiredService<SeedingServices>().CreateRolesAsync();
     }
 }

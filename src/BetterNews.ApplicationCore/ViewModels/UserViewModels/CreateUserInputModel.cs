@@ -3,7 +3,7 @@
 public class CreateUserInputModel
 {
     [Required(ErrorMessage = "Campo {0} é obrigatório.")]
-    [StringLength(75, MinimumLength = 5, ErrorMessage = "Campo {0} deve conter entre {1} e {2} caracteres.")]
+    [StringLength(75, MinimumLength = 5, ErrorMessage = "Campo {0} deve conter entre {2} e {1} caracteres.")]
     public string Username { get; set; }
 
     [Required(ErrorMessage = "Campo {0} é obrigatório.")]
