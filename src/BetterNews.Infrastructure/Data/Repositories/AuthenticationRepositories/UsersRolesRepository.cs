@@ -5,13 +5,16 @@ public class UsersRolesRepository : BaseRepository, IUsersRolesRepository
 {
     private readonly CrossCuttingRepository _crossCuttingRepository;
 
-    public UsersRolesRepository(AuthenticationContext context, CrossCuttingRepository crossCuttingRepository) : base(context) => _crossCuttingRepository = crossCuttingRepository;
+    public UsersRolesRepository(AuthenticationContext context, CrossCuttingRepository crossCuttingRepository)
+        : base(context) => _crossCuttingRepository = crossCuttingRepository;
 
-    public async Task<IEnumerable<UsersRoles>> GetByUserIdAsync(int userId) => await Context.UsersRoles.Where(prop => prop.UserId == userId).ToListAsync();
+    public async Task<IEnumerable<UsersRoles>> GetByUserIdAsync(int userId) => await Context.UsersRoles
+        .Where(prop => prop.UserId == userId).ToListAsync();
 
     public async Task InsertDefaultAsync(int? userId)
     {
-        await Context.UsersRoles.AddAsync(new UsersRoles(userId.Value, await _crossCuttingRepository.GetRoleIdByNameAsync("User")));
+        await Context.UsersRoles.AddAsync(new UsersRoles(userId.Value, await _crossCuttingRepository
+            .GetRoleIdByNameAsync("User")));
         await Context.SaveChangesAsync();
     }
 

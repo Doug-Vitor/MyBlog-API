@@ -7,12 +7,14 @@ public class UserServices : IUserServices
     private readonly IMapper _mapper;
     private readonly HttpContextAccessorHelper _contextAccessor;
 
-    public UserServices(IUserRepository userRepository, IMapper mapper, HttpContextAccessorHelper contextAccessor) => (_userRepository, _mapper, _contextAccessor) = (userRepository, mapper, contextAccessor);
+    public UserServices(IUserRepository userRepository, IMapper mapper, HttpContextAccessorHelper contextAccessor)
+        => (_userRepository, _mapper, _contextAccessor) = (userRepository, mapper, contextAccessor);
 
     public async Task<UserViewModel> GetByIdAsync(int? id)
     {
         Guard.Against.Null(id, nameof(id), "Campo ID não pode ser vazio.");
-        return _mapper.Map<UserViewModel>(await _userRepository.GetByIdAsync(id.Value)) ?? throw new NotFoundException("Não foi possível encontrar um usuário correspondente ao ID fornecido.");
+        return _mapper.Map<UserViewModel>(await _userRepository.GetByIdAsync(id.Value)) ?? 
+            throw new NotFoundException("Não foi possível encontrar um usuário correspondente ao ID fornecido.");
     }
 
     public async Task<int> SignUpAsync(CreateUserInputModel inputModel)
