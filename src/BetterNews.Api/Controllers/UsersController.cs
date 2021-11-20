@@ -12,6 +12,15 @@ namespace BetterNews.Api.Controllers
 
         public UsersController(IUserServices userServices, ITokenServices tokenServices, IMapper mapper) => (_userServices, _tokenServices, _mapper) = (userServices, tokenServices, mapper);
 
+        /// <summary>
+        /// Retorna o usuário correspondente ao ID fornecido.
+        /// </summary>
+        /// <param name="id">O ID do usuário a ser recuperado.</param>
+        /// <returns></returns>
+        [ProducesResponseType(200, Type = typeof(UserViewModel))]
+        [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(404, Type = typeof(ErrorViewModel))]
         [Authorize]
         [HttpGet("id")]
         public async Task<IActionResult> GetById(int? id)
@@ -22,14 +31,24 @@ namespace BetterNews.Api.Controllers
             }
             catch (ArgumentNullException error)
             {
-                return BadRequest(error.Message);
+                ModelState.AddModelError(string.Empty, error.Message);
             }
             catch (NotFoundException error)
             {
-                return NotFound(error.Message);
+                return NotFound(new ErrorViewModel(error.Message));
             }
+
+            return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors).Select(prop => prop.ErrorMessage).ToList()));
         }
 
+        /// <summary>
+        /// Cadastra um novo usuário
+        /// </summary>
+        /// <param name="inputModel">Os dados do usuário a ser cadastrado</param>
+        /// <returns></returns>
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
+        [ProducesResponseType(500, Type = typeof(ErrorViewModel))]
         [HttpPost]
         public async Task<IActionResult> SignUp([FromBody] CreateUserInputModel inputModel)
         {
@@ -43,16 +62,23 @@ namespace BetterNews.Api.Controllers
             }
             catch (ArgumentNullException error)
             {
-                return BadRequest(error.Message);
+                ModelState.AddModelError(string.Empty, error.Message);
             }
             catch (FieldInUseException error)
             {
-                return StatusCode(500, error.Message);
+                return StatusCode(500, new ErrorViewModel(error.Message));
             }
 
-            return BadRequest(ModelState);
+            return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors).Select(prop => prop.ErrorMessage).ToList()));
         }
 
+        /// <summary>
+        /// Faz o login de um usuário.
+        /// </summary>
+        /// <param name="signInModel">Os dados do usuário a ser logado</param>
+        /// <returns></returns>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] SignInUserModel signInModel)
         {
@@ -66,34 +92,42 @@ namespace BetterNews.Api.Controllers
             }
             catch (ArgumentNullException error)
             {
-                return BadRequest(error.Message);
+                ModelState.AddModelError(string.Empty, error.Message);
             }
             catch (SignInFailException error)
             {
-                return BadRequest(error.Message);
+                ModelState.AddModelError(string.Empty, error.Message);
             }
 
-            return BadRequest(ModelState);
+            return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors).Select(prop => prop.ErrorMessage).ToList()));
         }
 
-        [HttpPatch]
+        /// <summary>
+        /// Atualiza os dados do usuário logado.
+        /// </summary>
+        /// <param name="inputModel">Os dados a serem atualizados</param>
+        /// <returns></returns>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
+        [ProducesResponseType(401)]
         [Authorize]
+        [HttpPatch]
         public async Task<IActionResult> Update([FromBody] CreateUserInputModel inputModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    await _userServices.UpdateAsync(inputModel)
+                    await _userServices.UpdateAsync(inputModel);
                     return Ok();
                 }
             }
             catch (ArgumentNullException error)
             {
-                return BadRequest(error.Message);
+                ModelState.AddModelError(string.Empty, error.Message);
             }
 
-            return BadRequest(ModelState);
+            return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors).Select(prop => prop.ErrorMessage).ToList()));
         }
     }
 }
