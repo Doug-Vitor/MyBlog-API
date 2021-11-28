@@ -13,6 +13,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterNews.Services", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterNews.Api", "src\BetterNews.Api\BetterNews.Api.csproj", "{B43A29E2-69E2-480B-838F-4ABFA6384E62}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{675F78A8-B579-4EA1-8037-E53452859DB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterNews.FunctionalTests", "tests\BetterNews.FunctionalTests\BetterNews.FunctionalTests.csproj", "{7401334B-6CE2-468E-A456-C3FD0F42D2FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterNews.IntegrationTests", "tests\BetterNews.IntegrationTests\BetterNews.IntegrationTests.csproj", "{F128C99E-46A3-46DC-8BB1-DE01FD86008F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterNews.UnitTests", "tests\BetterNews.UnitTests\BetterNews.UnitTests.csproj", "{EBBEC462-ADE2-448E-8732-611297D24C58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +43,18 @@ Global
 		{B43A29E2-69E2-480B-838F-4ABFA6384E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B43A29E2-69E2-480B-838F-4ABFA6384E62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B43A29E2-69E2-480B-838F-4ABFA6384E62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7401334B-6CE2-468E-A456-C3FD0F42D2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7401334B-6CE2-468E-A456-C3FD0F42D2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7401334B-6CE2-468E-A456-C3FD0F42D2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7401334B-6CE2-468E-A456-C3FD0F42D2FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F128C99E-46A3-46DC-8BB1-DE01FD86008F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F128C99E-46A3-46DC-8BB1-DE01FD86008F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F128C99E-46A3-46DC-8BB1-DE01FD86008F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F128C99E-46A3-46DC-8BB1-DE01FD86008F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBBEC462-ADE2-448E-8732-611297D24C58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBBEC462-ADE2-448E-8732-611297D24C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBBEC462-ADE2-448E-8732-611297D24C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBBEC462-ADE2-448E-8732-611297D24C58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +64,9 @@ Global
 		{1DAB253B-0ED2-474F-ABAC-E806AB930ABB} = {57DF12E7-E915-4195-B934-3C043007B79F}
 		{1C10FB38-C55D-4A15-8F15-B45AFDAE3DA4} = {57DF12E7-E915-4195-B934-3C043007B79F}
 		{B43A29E2-69E2-480B-838F-4ABFA6384E62} = {57DF12E7-E915-4195-B934-3C043007B79F}
+		{7401334B-6CE2-468E-A456-C3FD0F42D2FD} = {675F78A8-B579-4EA1-8037-E53452859DB6}
+		{F128C99E-46A3-46DC-8BB1-DE01FD86008F} = {675F78A8-B579-4EA1-8037-E53452859DB6}
+		{EBBEC462-ADE2-448E-8732-611297D24C58} = {675F78A8-B579-4EA1-8037-E53452859DB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B8A26E5-ABF9-4415-A312-1907BECC3D5E}
