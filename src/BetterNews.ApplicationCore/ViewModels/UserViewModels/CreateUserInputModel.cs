@@ -6,6 +6,7 @@ public class CreateUserInputModel : BaseUserViewModel
     [DisplayName("Senha")]
     [Required(ErrorMessage = "Campo {0} é obrigatório.")]
     [DataType(DataType.Password)]
+    [PasswordValidation]
     public string Password { get; set; }
 
     [Required(ErrorMessage = "Campo {0} é obrigatório.")]
