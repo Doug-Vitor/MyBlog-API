@@ -11,12 +11,23 @@ public class HttpContextAccessorHelper
 
     internal async Task SignInUserAsync(List<Claim> claims)
     {
+        if (_contextAcessor.HttpContext.User.Identity.IsAuthenticated) return;
+
         ClaimsIdentity identity = new(claims);
         await _contextAcessor.HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new(identity));
     }
 
-    public async Task SignOutUserAsync() => await _contextAcessor.HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
+    public async Task SignOutUserAsync()
+    {
+        if (_contextAcessor.HttpContext.User.Identity.IsAuthenticated)
+            await _contextAcessor.HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
+    }
 
-    public int GetAuthenticatedUserId() => int.Parse(_contextAcessor.HttpContext.User
-        .FindFirst(ClaimTypes.NameIdentifier).Value);
+    public int? GetAuthenticatedUserId()
+    {
+        if (_contextAcessor.HttpContext.User.Identity.IsAuthenticated)
+            return int.Parse(_contextAcessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        return null;
+    }
 }

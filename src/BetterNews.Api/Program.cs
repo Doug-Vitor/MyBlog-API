@@ -1,13 +1,12 @@
 WebApplicationBuilder applicationBuilder = WebApplication.CreateBuilder(args);
 
-applicationBuilder.Services.AddControllers();
+applicationBuilder.Services.AddControllers().ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 applicationBuilder.Services.AddEndpointsApiExplorer();
 applicationBuilder.Services.AddCors();
 applicationBuilder.Services.AddHttpContextAccessor();
 
 applicationBuilder.Services.AddSingleton<HttpContextAccessorHelper>();
 applicationBuilder.Services.ConfigureDependencies(applicationBuilder.Configuration);
-
 
 WebApplication application = applicationBuilder.Build();
 

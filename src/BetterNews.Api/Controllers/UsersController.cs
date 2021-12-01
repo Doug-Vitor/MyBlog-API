@@ -51,7 +51,6 @@ namespace BetterNews.Api.Controllers
         /// <returns></returns>
         [ProducesResponseType(201, Type = typeof(LoginResultViewModel))]
         [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
-        [ProducesResponseType(500, Type = typeof(ErrorViewModel))]
         [HttpPost]
         public async Task<IActionResult> SignUp([FromBody] CreateUserInputModel inputModel)
         {
@@ -70,7 +69,7 @@ namespace BetterNews.Api.Controllers
             }
             catch (FieldInUseException error)
             {
-                return StatusCode(500, new ErrorViewModel(error.Message));
+                ModelState.AddModelError(string.Empty, error.Message);
             }
 
             return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors)

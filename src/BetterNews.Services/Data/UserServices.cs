@@ -41,7 +41,7 @@ public class UserServices : IUserServices
         Guard.Against.Null(inputModel.Email, nameof(inputModel.Email), "Por favor, insira um e-mail válido.");
         Guard.Against.Null(inputModel.Password, nameof(inputModel.Password), "Por favor, insira uma senha válida.");
         
-        await _userRepository.UpdateAsync(_contextAccessor.GetAuthenticatedUserId(), MapToUser(inputModel));
+        await _userRepository.UpdateAsync(_contextAccessor.GetAuthenticatedUserId().GetValueOrDefault(), MapToUser(inputModel));
     }
 
     private User MapToUser(CreateUserInputModel inputModel)
