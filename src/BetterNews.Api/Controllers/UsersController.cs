@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,10 @@ namespace BetterNews.Api.Controllers
         private readonly IUserServices _userServices;
         private readonly IMapper _mapper;
         private readonly ITokenServices _tokenServices;
+        private readonly HttpContextAccessorHelper _contextAccessor;
 
-        public UsersController(IUserServices userServices, ITokenServices tokenServices, IMapper mapper) => 
-            (_userServices, _tokenServices, _mapper) = (userServices, tokenServices, mapper);
+        public UsersController(IUserServices userServices, ITokenServices tokenServices, IMapper mapper, HttpContextAccessorHelper contextAccessor) => 
+            (_userServices, _tokenServices, _mapper, _contextAccessor) = (userServices, tokenServices, mapper, contextAccessor);
 
         /// <summary>
         /// Retorna o usuário correspondente ao ID fornecido.
@@ -106,6 +108,13 @@ namespace BetterNews.Api.Controllers
 
             return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors)
                 .Select(prop => prop.ErrorMessage).ToList()));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SignOut()
+        { 
+            await _contextAccessor.SignOutUserAsync();
+            return Ok();
         }
 
         /// <summary>

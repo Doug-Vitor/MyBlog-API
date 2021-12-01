@@ -9,9 +9,10 @@ public class TokenServices : ITokenServices
     private readonly IUserServices _userServices;
     private readonly IRoleRepository _roleRepository;
     private readonly SecretsConfiguration _secretsConfiguration;
+    private readonly HttpContextAccessorHelper _contextAccessor;
 
-    public TokenServices(IUserServices userServices, IRoleRepository roleRepository, IOptions<SecretsConfiguration> secretsConfiguration) =>
-        (_userServices, _roleRepository, _secretsConfiguration) = (userServices, roleRepository, secretsConfiguration.Value);
+    public TokenServices(IUserServices userServices, IRoleRepository roleRepository, IOptions<SecretsConfiguration> secretsConfiguration, HttpContextAccessorHelper contextAccessor) =>
+        (_userServices, _roleRepository, _secretsConfiguration, _contextAccessor) = (userServices, roleRepository, secretsConfiguration.Value, contextAccessor);
 
     public async Task<string> GenerateTokenAsync(int? userId)
     {
@@ -34,11 +35,11 @@ public class TokenServices : ITokenServices
         SecurityTokenDescriptor tokenDescriptor = new()
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(12),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
         SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+        await _contextAccessor.SignInUserAsync(claims);
         return tokenHandler.WriteToken(token);
     }
 }
