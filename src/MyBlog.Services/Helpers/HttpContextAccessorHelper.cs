@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -13,14 +13,14 @@ public class HttpContextAccessorHelper
     {
         if (_contextAcessor.HttpContext.User.Identity.IsAuthenticated) return;
 
-        ClaimsIdentity identity = new(claims);
-        await _contextAcessor.HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new(identity));
+        ClaimsIdentity identity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        await _contextAcessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new(identity));
     }
 
     public async Task SignOutUserAsync()
     {
         if (_contextAcessor.HttpContext.User.Identity.IsAuthenticated)
-            await _contextAcessor.HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
+            await _contextAcessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 
     public int? GetAuthenticatedUserId()

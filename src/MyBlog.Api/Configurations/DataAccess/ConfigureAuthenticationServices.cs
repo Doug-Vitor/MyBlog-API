@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -11,7 +12,11 @@ public static class ConfigureAuthenticationServices
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.RequireAuthenticatedSignIn = true;
         })
+        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddJwtBearer(options => 
         {
             options.RequireHttpsMetadata = false;

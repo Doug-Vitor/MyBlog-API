@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
@@ -19,9 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BetterNews.ApplicationCore\BetterNews.ApplicationCore.csproj" />
-    <ProjectReference Include="..\BetterNews.Infrastructure\BetterNews.Infrastructure.csproj" />
-    <ProjectReference Include="..\BetterNews.Services\BetterNews.Services.csproj" />
+    <ProjectReference Include="..\MyBlog.ApplicationCore\MyBlog.ApplicationCore.csproj" />
+    <ProjectReference Include="..\MyBlog.Infrastructure\MyBlog.Infrastructure.csproj" />
+    <ProjectReference Include="..\MyBlog.Services\MyBlog.Services.csproj" />
   </ItemGroup>
 
 </Project>
