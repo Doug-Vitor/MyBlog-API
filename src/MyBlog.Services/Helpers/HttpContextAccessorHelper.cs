@@ -13,8 +13,9 @@ public class HttpContextAccessorHelper
     {
         if (_contextAcessor.HttpContext.User.Identity.IsAuthenticated) return;
 
-        ClaimsIdentity identity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        await _contextAcessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new(identity));
+        ClaimsPrincipal principal = new(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+        _contextAcessor.HttpContext.User = principal;
+        await _contextAcessor.HttpContext.SignInAsync(principal);
     }
 
     public async Task SignOutUserAsync()

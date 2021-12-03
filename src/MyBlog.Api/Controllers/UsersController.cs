@@ -108,6 +108,7 @@ namespace BetterNews.Api.Controllers
                 .Select(prop => prop.ErrorMessage).ToList()));
         }
 
+        [ProducesResponseType(200)]
         [HttpPost]
         public async Task<IActionResult> SignOut()
         { 
@@ -116,7 +117,16 @@ namespace BetterNews.Api.Controllers
         }
 
         /// <summary>
-        /// Atualiza os dados do usuário logado.
+        /// Retorna os dados do usuário autenticado para uma futura atualização.
+        /// </summary>
+        /// <returns></returns>
+        [ProducesResponseType(200, Type = typeof(UserViewModel))]
+        [Authorize]
+        [HttpGet("Update/")]
+        public async Task<IActionResult> AuthenticatedUser() => Ok(await _userServices.GetAuthenticatedUserAsync());
+
+        /// <summary>
+        /// Atualiza os dados do usuário autenticado.
         /// </summary>
         /// <param name="inputModel">Os dados a serem atualizados</param>
         /// <returns></returns>
@@ -124,14 +134,14 @@ namespace BetterNews.Api.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
         [ProducesResponseType(401)]
         [Authorize]
-        [HttpPatch]
-        public async Task<IActionResult> Update([FromBody] CreateUserInputModel inputModel)
+        [HttpPatch("Update/")]
+        public async Task<IActionResult> AuthenticatedUser([FromBody] CreateUserInputModel inputModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    await _userServices.UpdateAsync(inputModel);
+                    await _userServices.UpdateAuthenticatedUserAsync(inputModel);
                     return Ok();
                 }
             }

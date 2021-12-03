@@ -16,7 +16,7 @@ public static class ConfigureAuthenticationServices
             options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             options.RequireAuthenticatedSignIn = true;
         })
-        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie()
         .AddJwtBearer(options => 
         {
             options.RequireHttpsMetadata = false;

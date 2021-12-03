@@ -33,8 +33,10 @@ public class UserServices : IUserServices
         Guard.Against.Null(signInModel.Password, nameof(signInModel.Password), "Por favor, insira uma senha válida.");
         return await _userRepository.SignInAsync(signInModel);
     }
+    public async Task<UserViewModel> GetAuthenticatedUserAsync()
+        => _mapper.Map<UserViewModel>(await _userRepository.GetByIdAsync(_contextAccessor.GetAuthenticatedUserId().GetValueOrDefault()));
 
-    public async Task UpdateAsync(CreateUserInputModel inputModel)
+    public async Task UpdateAuthenticatedUserAsync(CreateUserInputModel inputModel)
     {
         Guard.Against.Null(inputModel, nameof(inputModel), "Por favor, insira dados válidos.");
         Guard.Against.Null(inputModel.Username, nameof(inputModel.Username), "Por favor, insira um nome de usuário válido.");
