@@ -122,7 +122,7 @@ namespace BetterNews.Api.Controllers
         /// <returns></returns>
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
         [Authorize]
-        [HttpGet("Update/")]
+        [HttpGet]
         public async Task<IActionResult> AuthenticatedUser() => Ok(await _userServices.GetAuthenticatedUserAsync());
 
         /// <summary>

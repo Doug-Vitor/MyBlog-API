@@ -41,7 +41,9 @@ public class UserServices : IUserServices
         Guard.Against.Null(inputModel, nameof(inputModel), "Por favor, insira dados válidos.");
         Guard.Against.Null(inputModel.Username, nameof(inputModel.Username), "Por favor, insira um nome de usuário válido.");
         Guard.Against.Null(inputModel.Email, nameof(inputModel.Email), "Por favor, insira um e-mail válido.");
-        Guard.Against.Null(inputModel.Password, nameof(inputModel.Password), "Por favor, insira uma senha válida.");
+
+        if (string.IsNullOrWhiteSpace(inputModel.Password))
+            inputModel.Password = (await _userRepository.GetByIdAsync(_contextAccessor.GetAuthenticatedUserId().GetValueOrDefault())).PasswordHash;
         
         await _userRepository.UpdateAsync(_contextAccessor.GetAuthenticatedUserId().GetValueOrDefault(), MapToUser(inputModel));
     }
