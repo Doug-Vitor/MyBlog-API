@@ -19,10 +19,10 @@ namespace BetterNews.Api.Controllers
         /// </summary>
         /// <param name="id">O ID do usuário a ser recuperado.</param>
         /// <returns></returns>
-        [ProducesResponseType(200, Type = typeof(UserViewModel))]
-        [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
+        [ProducesResponseType(200, Type = typeof(UserDTO))]
+        [ProducesResponseType(400, Type = typeof(ErrorDTO))]
         [ProducesResponseType(401)]
-        [ProducesResponseType(404, Type = typeof(ErrorViewModel))]
+        [ProducesResponseType(404, Type = typeof(ErrorDTO))]
         [Authorize]
         [HttpGet("id")]
         public async Task<IActionResult> GetById(int? id)
@@ -37,10 +37,10 @@ namespace BetterNews.Api.Controllers
             }
             catch (NotFoundException error)
             {
-                return NotFound(new ErrorViewModel(error.Message));
+                return NotFound(new ErrorDTO(error.Message));
             }
 
-            return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors)
+            return BadRequest(new ErrorDTO(ModelState.Values.SelectMany(prop => prop.Errors)
                 .Select(prop => prop.ErrorMessage).ToList()));
         }
 
@@ -49,8 +49,8 @@ namespace BetterNews.Api.Controllers
         /// </summary>
         /// <param name="inputModel">Os dados do usuário a ser cadastrado</param>
         /// <returns></returns>
-        [ProducesResponseType(201, Type = typeof(LoginResultViewModel))]
-        [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
+        [ProducesResponseType(201, Type = typeof(LoginResulTdto))]
+        [ProducesResponseType(400, Type = typeof(ErrorDTO))]
         [HttpPost]
         public async Task<IActionResult> SignUp([FromBody] CreateUserInputModel inputModel)
         {
@@ -60,7 +60,7 @@ namespace BetterNews.Api.Controllers
                 {
                     int userId = await _userServices.SignUpAsync(inputModel);
                     return CreatedAtAction(nameof(GetById), new { id = userId }, 
-                        new LoginResultViewModel(inputModel.Username, await _tokenServices.GenerateTokenAsync(userId)));
+                        new LoginResulTdto(inputModel.Username, await _tokenServices.GenerateTokenAsync(userId)));
                 }
             }
             catch (ArgumentNullException error)
@@ -72,7 +72,7 @@ namespace BetterNews.Api.Controllers
                 ModelState.AddModelError(string.Empty, error.Message);
             }
 
-            return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors)
+            return BadRequest(new ErrorDTO(ModelState.Values.SelectMany(prop => prop.Errors)
                 .Select(prop => prop.ErrorMessage).ToList()));
         }
 
@@ -81,8 +81,8 @@ namespace BetterNews.Api.Controllers
         /// </summary>
         /// <param name="signInModel">Os dados do usuário a ser logado</param>
         /// <returns></returns>
-        [ProducesResponseType(201, Type = typeof(LoginResultViewModel))]
-        [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
+        [ProducesResponseType(201, Type = typeof(LoginResulTdto))]
+        [ProducesResponseType(400, Type = typeof(ErrorDTO))]
         [HttpPost]
         public async Task<IActionResult> SignIn([FromBody] SignInUserModel signInModel)
         {
@@ -91,7 +91,7 @@ namespace BetterNews.Api.Controllers
                 if (ModelState.IsValid)
                 {
                     int? userId = await _userServices.SignInAsync(signInModel);
-                    return Ok(new LoginResultViewModel(signInModel.Username, await _tokenServices
+                    return Ok(new LoginResulTdto(signInModel.Username, await _tokenServices
                         .GenerateTokenAsync(userId)));
                 }
             }
@@ -104,7 +104,7 @@ namespace BetterNews.Api.Controllers
                 ModelState.AddModelError(string.Empty, error.Message);
             }
 
-            return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors)
+            return BadRequest(new ErrorDTO(ModelState.Values.SelectMany(prop => prop.Errors)
                 .Select(prop => prop.ErrorMessage).ToList()));
         }
 
@@ -120,7 +120,7 @@ namespace BetterNews.Api.Controllers
         /// Retorna os dados do usuário autenticado para uma futura atualização.
         /// </summary>
         /// <returns></returns>
-        [ProducesResponseType(200, Type = typeof(UserViewModel))]
+        [ProducesResponseType(200, Type = typeof(UserDTO))]
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> AuthenticatedUser() => Ok(await _userServices.GetAuthenticatedUserAsync());
@@ -131,7 +131,7 @@ namespace BetterNews.Api.Controllers
         /// <param name="inputModel">Os dados a serem atualizados</param>
         /// <returns></returns>
         [ProducesResponseType(200)]
-        [ProducesResponseType(400, Type = typeof(ErrorViewModel))]
+        [ProducesResponseType(400, Type = typeof(ErrorDTO))]
         [ProducesResponseType(401)]
         [Authorize]
         [HttpPatch("Update/")]
@@ -150,7 +150,7 @@ namespace BetterNews.Api.Controllers
                 ModelState.AddModelError(string.Empty, error.Message);
             }
 
-            return BadRequest(new ErrorViewModel(ModelState.Values.SelectMany(prop => prop.Errors)
+            return BadRequest(new ErrorDTO(ModelState.Values.SelectMany(prop => prop.Errors)
                 .Select(prop => prop.ErrorMessage).ToList()));
         }
     }

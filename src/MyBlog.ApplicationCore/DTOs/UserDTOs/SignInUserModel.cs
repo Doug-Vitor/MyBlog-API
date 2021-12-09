@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-public class SignInUserModel : BaseUserViewModel
+public class SignInUserModel : BaseUserDTO
 {
     [DisplayName("Senha")]
     [Required(ErrorMessage = "Campo {0} é obrigatório.")]

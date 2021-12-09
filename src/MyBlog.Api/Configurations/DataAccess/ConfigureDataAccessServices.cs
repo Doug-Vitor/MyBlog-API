@@ -11,10 +11,10 @@ public static class ConfigureDataAccessServices
 
     private static IServiceCollection AddDbContext(IServiceCollection services, ConfigurationManager configurations) =>
         services.AddDbContext<AuthenticationContext>(options => options.UseSqlServer(configurations
-        .GetConnectionString("Accounts")));
+        .GetConnectionString("Accounts"))).AddDbContext<CoreContext>(options => options.UseSqlServer(configurations
+        .GetConnectionString("BlogDb")));
 
-    private static IServiceCollection AddCoreDataServices(IServiceCollection services) => 
-        services.AddScoped<IRoleRepository, RoleRepository>().AddScoped<IUserRepository, UserRepository>()
-        .AddScoped<IUserServices, UserServices>().AddScoped<IUsersRolesRepository, UsersRolesRepository>()
-        .AddScoped<CrossCuttingRepository>().AddScoped<ITokenServices, TokenServices>().AddScoped<SeedingServices>();
+    private static IServiceCollection AddCoreDataServices(IServiceCollection services) => services.AddScoped<IUserRepository, UserRepository>()
+        .AddScoped<IUserServices, UserServices>().AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>))
+        .AddScoped<IPostServices, PostServices>().AddScoped<ITokenServices, TokenServices>();
 }

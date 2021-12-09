@@ -16,8 +16,4 @@
     <ProjectReference Include="..\MyBlog.ApplicationCore\MyBlog.ApplicationCore.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Repositories\ApplicationRepository\" />
-  </ItemGroup>
-
 </Project>

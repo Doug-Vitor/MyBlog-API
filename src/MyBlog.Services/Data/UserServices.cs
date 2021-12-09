@@ -10,10 +10,10 @@ public class UserServices : IUserServices
     public UserServices(IUserRepository userRepository, IMapper mapper, HttpContextAccessorHelper contextAccessor)
         => (_userRepository, _mapper, _contextAccessor) = (userRepository, mapper, contextAccessor);
 
-    public async Task<UserViewModel> GetByIdAsync(int? id)
+    public async Task<UserDTO> GetByIdAsync(int? id)
     {
         Guard.Against.Null(id, nameof(id), "Campo ID não pode ser vazio.");
-        return _mapper.Map<UserViewModel>(await _userRepository.GetByIdAsync(id.Value)) ?? 
+        return _mapper.Map<UserDTO>(await _userRepository.GetByIdAsync(id.Value)) ?? 
             throw new NotFoundException("Não foi possível encontrar um usuário correspondente ao ID fornecido.");
     }
 
@@ -33,8 +33,8 @@ public class UserServices : IUserServices
         Guard.Against.Null(signInModel.Password, nameof(signInModel.Password), "Por favor, insira uma senha válida.");
         return await _userRepository.SignInAsync(signInModel);
     }
-    public async Task<UserViewModel> GetAuthenticatedUserAsync()
-        => _mapper.Map<UserViewModel>(await _userRepository.GetByIdAsync(_contextAccessor.GetAuthenticatedUserId().GetValueOrDefault()));
+    public async Task<UserDTO> GetAuthenticatedUserAsync()
+        => _mapper.Map<UserDTO>(await _userRepository.GetByIdAsync(_contextAccessor.GetAuthenticatedUserId().GetValueOrDefault()));
 
     public async Task UpdateAuthenticatedUserAsync(CreateUserInputModel inputModel)
     {

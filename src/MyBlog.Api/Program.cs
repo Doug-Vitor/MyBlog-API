@@ -19,7 +19,5 @@ application.UseCors(setup => setup.AllowAnyOrigin().AllowAnyMethod().AllowAnyHea
 application.UseAuthentication();
 application.UseAuthorization();
 
-await application.CreateRolesAsync();
-
 application.MapControllers();
 application.Run();

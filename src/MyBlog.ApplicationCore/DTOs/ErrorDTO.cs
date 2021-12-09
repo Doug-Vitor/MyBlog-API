@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel;
 
-public class ErrorViewModel
+public class ErrorDTO
 {
     [DisplayName("Erros")]
     public List<string> ErrorsMessages { get; set; } = new();
 
-    public ErrorViewModel()
+    public ErrorDTO()
     {
     }
 
-    public ErrorViewModel(string errorMessage) => ErrorsMessages.Add(errorMessage);
+    public ErrorDTO(string errorMessage) => ErrorsMessages.Add(errorMessage);
 
-    public ErrorViewModel(List<string> errorsMessages) => ErrorsMessages = errorsMessages;
+    public ErrorDTO(List<string> errorsMessages) => ErrorsMessages = errorsMessages;
 
     public void AddErrorMessage(string errorMessage) => ErrorsMessages.Add(errorMessage);
 }

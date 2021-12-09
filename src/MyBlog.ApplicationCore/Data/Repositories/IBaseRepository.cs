@@ -1,8 +1,8 @@
-﻿public interface IBaseRepository<TModel, TEntity> where TEntity : BaseEntity
+﻿public interface IBaseRepository<T> where T : BaseEntity
 {
-    Task InsertAsync(TModel entity);
-    Task<TEntity> GetByIdAsync(int? id);
-    Task<IEnumerable<TEntity>> GetAllAsync();
-    Task UpdateAsync(int? id, TModel entity);
-    Task RemoveAsync(int? id);
+    Task InsertAsync(T entity);
+    Task<T> GetByIdAsync(int id);
+    Task<IEnumerable<T>> GetAllAsync();
+    Task UpdateAsync(int id, T entity);
+    Task RemoveAsync(int id);
 }

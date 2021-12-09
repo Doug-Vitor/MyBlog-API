@@ -4,8 +4,6 @@ using System.Reflection;
 public class AuthenticationContext : DbContext
 {
     public DbSet<User> Users { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<UsersRoles> UsersRoles { get; set; }
 
     public AuthenticationContext(DbContextOptions<AuthenticationContext> options) : base(options)
     {
