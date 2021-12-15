@@ -11,17 +11,17 @@ namespace MyBlog.Api.Controllers
         /// <summary>
         /// Cria uma nova publicação.
         /// </summary>
-        /// <param name="post">A publicação a ser criada.</param>
+        /// <param name="createdPost">A publicação a ser criada.</param>
         /// <returns></returns>
-        [ProducesResponseType(201, Type = typeof(Post))]
+        [ProducesResponseType(201, Type = typeof(PostDTO))]
         [ProducesResponseType(500, Type = typeof(ErrorDTO))]
         [HttpPost]
-        public async Task<IActionResult> Insert([FromBody] Post post)
+        public async Task<IActionResult> Insert([FromBody] CreatePostInputModel createdPost)
         {
             try
             {
-                await _postServices.InsertAsync(post);
-                return CreatedAtRoute(nameof(GetById), new { id = post.Id }, post);
+                int postId = await _postServices.InsertAsync(createdPost);
+                return CreatedAtRoute(nameof(GetById), new { id = postId }, await _postServices.GetByIdAsync(postId));
             }
             catch (ArgumentNullException error)
             {
@@ -34,7 +34,7 @@ namespace MyBlog.Api.Controllers
         /// </summary>
         /// <param name="id">O ID da publicação a ser retornada.</param>
         /// <returns></returns>
-        [ProducesResponseType(200, Type = typeof(Post))]
+        [ProducesResponseType(200, Type = typeof(PostDTO))]
         [ProducesResponseType(404, Type = typeof(ErrorDTO))]
         [ProducesResponseType(500, Type = typeof(ErrorDTO))]
         [HttpGet("{id}")]
@@ -66,13 +66,13 @@ namespace MyBlog.Api.Controllers
         /// <summary>
         /// Atualiza a publicação correspondente ao ID fornecido.
         /// </summary>
-        /// <param name="id">O ID da publicação a ser fornecido.</param>
+        /// <param name="id">O ID da publicação a ser excluída.</param>
         /// <param name="updatedPost">A publicação a ser atualizada.</param>
         /// <returns></returns>
         [ProducesResponseType(200)]
         [ProducesResponseType(500, Type = typeof(ErrorDTO))]
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int? id, [FromBody] Post updatedPost)
+        public async Task<IActionResult> Update([FromRoute] int? id, [FromBody] CreatePostInputModel updatedPost)
         {
             try
             {
@@ -85,6 +85,11 @@ namespace MyBlog.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Exclui a publicação correspondente ao ID fornecido.
+        /// </summary>
+        /// <param name="id">O ID da publicação a ser excluída.</param>
+        /// <returns></returns>
         [ProducesResponseType(200)]
         [ProducesResponseType(500, Type = typeof(ErrorDTO))]
         [HttpDelete("{id}")]

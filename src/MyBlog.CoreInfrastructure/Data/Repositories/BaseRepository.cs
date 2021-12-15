@@ -1,28 +1,32 @@
-﻿public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
+﻿using Microsoft.EntityFrameworkCore;
+
+public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 {
-    public Task InsertAsync(T entity)
+    private readonly CoreContext _context;
+
+    public BaseRepository(CoreContext context) => _context = context;
+
+    public async Task InsertAsync(T entity)
     {
-        throw new NotImplementedException();
+        await _context.AddAsync(entity);
+        await _context.SaveChangesAsync();
     }
 
-    public Task<T> GetByIdAsync(int id)
+    public async Task<T> GetByIdAsync(int id) => await _context.Set<T>().FirstOrDefaultAsync(prop => prop.Id == id)
+        ?? throw new NotFoundException("Não foi possível encontrar uma publicação correspondente ao ID fornecido.");
+
+    public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync();
+
+    public async Task UpdateAsync(int id, T entity)
     {
-        throw new NotImplementedException();
-    }
-    public Task<IEnumerable<T>> GetAllAsync()
-    {
-        throw new NotImplementedException();
+        entity.Id = id;
+        _context.Update(entity);
+        await _context.SaveChangesAsync();
     }
 
-    public Task UpdateAsync(int id, T entity)
+    public async Task RemoveAsync(int id)
     {
-        throw new NotImplementedException();
+        _context.Remove(await GetByIdAsync(id));
+        await _context.SaveChangesAsync();
     }
-
-    public Task RemoveAsync(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    
 }

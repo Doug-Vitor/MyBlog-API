@@ -8,5 +8,9 @@ public class MappingProfile : Profile
         CreateMap<CreateUserInputModel, UserDTO>().ReverseMap();
         CreateMap<SignInUserModel, UserDTO>().ReverseMap();
         CreateMap<UserDTO, User>().ReverseMap();
+
+        CreateMap<Post, PostDTO>().ReverseMap();
+        CreateMap<IEnumerable<Post>, IEnumerable<PostDTO>>();
+        CreateMap<CreatePostInputModel, Post>().ReverseMap();
     }
 }
