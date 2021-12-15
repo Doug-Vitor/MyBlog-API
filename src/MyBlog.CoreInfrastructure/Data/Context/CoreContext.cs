@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-public  class CoreContext : DbContext
+public class CoreContext : DbContext
 {
+    public DbSet<Post> Posts { get; set; }
+
     public CoreContext(DbContextOptions<CoreContext> options) : base(options)
     {
     }
