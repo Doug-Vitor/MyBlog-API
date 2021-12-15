@@ -12,9 +12,10 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync();
+    public async Task<T> GetByIdAsync(int id) => await _context.Set<T>().FirstOrDefaultAsync(prop => prop.Id == id)
+        ?? throw new NotFoundException("Não foi possível encontrar uma publicação correspondente ao ID fornecido.");
 
-    public async Task<T> GetByIdAsync(int id) => await _context.Set<T>().FirstOrDefaultAsync(prop => prop.Id == id);
+    public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync();
 
     public async Task UpdateAsync(int id, T entity)
     {

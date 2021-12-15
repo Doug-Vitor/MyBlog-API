@@ -9,7 +9,7 @@ public abstract class BaseUserDTO
     public string Username { get; set; }
 
     public BaseUserDTO()
-    {
+    { 
     }
 
     public BaseUserDTO(string username) => Username = username;
