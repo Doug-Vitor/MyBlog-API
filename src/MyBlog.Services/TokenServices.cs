@@ -15,25 +15,22 @@ public class TokenServices : ITokenServices
 
     public async Task<string> GenerateTokenAsync(int? userId)
     {
-        UserDTO userViewModel = await _userServices.GetByIdAsync(userId);
-
-        JwtSecurityTokenHandler tokenHandler = new();
-        byte[] key = Encoding.ASCII.GetBytes(_secretsConfiguration.Secret);
-
+        UserDTO userDto = await _userServices.GetByIdAsync(userId);
         List<Claim> claims = new()
         {
-            new(ClaimTypes.Name, userViewModel.Username),
-            new(ClaimTypes.Email, userViewModel.Email),
+            new(ClaimTypes.Name, userDto.Username),
+            new(ClaimTypes.Email, userDto.Email),
             new(ClaimTypes.NameIdentifier, userId.Value.ToString())
         };
 
         SecurityTokenDescriptor tokenDescriptor = new()
         {
             Subject = new ClaimsIdentity(claims),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_secretsConfiguration.Secret)), SecurityAlgorithms.HmacSha256Signature)
         };
 
         await _contextAccessor.SignInUserAsync(claims);
+        JwtSecurityTokenHandler tokenHandler = new();
         return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
     }
 }

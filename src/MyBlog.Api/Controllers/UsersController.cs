@@ -49,7 +49,7 @@ namespace BetterNews.Api.Controllers
         /// </summary>
         /// <param name="inputModel">Os dados do usuário a ser cadastrado</param>
         /// <returns></returns>
-        [ProducesResponseType(201, Type = typeof(LoginResulTdto))]
+        [ProducesResponseType(201, Type = typeof(LoginResultDTO))]
         [ProducesResponseType(400, Type = typeof(ErrorDTO))]
         [HttpPost]
         public async Task<IActionResult> SignUp([FromBody] CreateUserInputModel inputModel)
@@ -60,10 +60,10 @@ namespace BetterNews.Api.Controllers
                 {
                     int userId = await _userServices.SignUpAsync(inputModel);
                     return CreatedAtAction(nameof(GetById), new { id = userId }, 
-                        new LoginResulTdto(inputModel.Username, await _tokenServices.GenerateTokenAsync(userId)));
+                        new LoginResultDTO(inputModel.Username, await _tokenServices.GenerateTokenAsync(userId)));
                 }
             }
-            catch (ArgumentNullException error)
+            catch (Exception error) when (error is ArgumentException || error is ArgumentNullException)
             {
                 ModelState.AddModelError(string.Empty, error.Message);
             }
@@ -81,9 +81,9 @@ namespace BetterNews.Api.Controllers
         /// </summary>
         /// <param name="signInModel">Os dados do usuário a ser logado</param>
         /// <returns></returns>
-        [ProducesResponseType(201, Type = typeof(LoginResulTdto))]
+        [ProducesResponseType(201, Type = typeof(LoginResultDTO))]
         [ProducesResponseType(400, Type = typeof(ErrorDTO))]
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> SignIn([FromBody] SignInUserModel signInModel)
         {
             try
@@ -91,11 +91,11 @@ namespace BetterNews.Api.Controllers
                 if (ModelState.IsValid)
                 {
                     int? userId = await _userServices.SignInAsync(signInModel);
-                    return Ok(new LoginResulTdto(signInModel.Username, await _tokenServices
+                    return Ok(new LoginResultDTO(signInModel.Username, await _tokenServices
                         .GenerateTokenAsync(userId)));
                 }
             }
-            catch (ArgumentNullException error)
+            catch (Exception error) when (error is ArgumentException || error is ArgumentNullException)
             {
                 ModelState.AddModelError(string.Empty, error.Message);
             }
@@ -109,7 +109,7 @@ namespace BetterNews.Api.Controllers
         }
 
         [ProducesResponseType(200)]
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> SignOut()
         { 
             await _contextAccessor.SignOutUserAsync();

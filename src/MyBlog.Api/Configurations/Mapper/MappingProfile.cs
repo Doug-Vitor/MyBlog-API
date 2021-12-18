@@ -10,7 +10,6 @@ public class MappingProfile : Profile
         CreateMap<UserDTO, User>().ReverseMap();
 
         CreateMap<Post, PostDTO>().ReverseMap();
-        CreateMap<IEnumerable<Post>, IEnumerable<PostDTO>>();
         CreateMap<CreatePostInputModel, Post>().ReverseMap();
     }
 }

@@ -1,11 +1,11 @@
-﻿public class LoginResulTdto
+﻿public class LoginResultDTO
 {
     public string Username { get; set; }
     public string Token { get; set; }
 
-    public LoginResulTdto()
+    public LoginResultDTO()
     {
     }
 
-    public LoginResulTdto(string username, string token) => (Username, Token) = (username, token);
+    public LoginResultDTO(string username, string token) => (Username, Token) = (username, token);
 }

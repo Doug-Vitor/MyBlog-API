@@ -12,10 +12,10 @@ public class PostServices : IPostServices
 
     public async Task<int> InsertAsync(CreatePostInputModel createdPost)
     {
-        EnsurePropertiesIsValid(createdPost);
+        createdPost.EnsureFieldsIsValid();
 
         Post post = _mapper.Map<Post>(createdPost);
-        post.UserId = _contextAccessor.GetAuthenticatedUserId().GetValueOrDefault();
+        post.AuthorId = _contextAccessor.GetAuthenticatedUserId().GetValueOrDefault();
 
         await _postRepository.InsertAsync(post);
         return post.Id;
@@ -32,13 +32,13 @@ public class PostServices : IPostServices
     public async Task UpdateAsync(int? id, CreatePostInputModel updatedPost)
     {
         Guard.Against.Null(id, nameof(id), "Campo ID não pode ser vazio.");
-        EnsurePropertiesIsValid(updatedPost);
+        updatedPost.EnsureFieldsIsValid();
 
         int authenticatedUserId = _contextAccessor.GetAuthenticatedUserId().GetValueOrDefault();
-        if ((await _postRepository.GetByIdAsync(id.GetValueOrDefault())).UserId == authenticatedUserId)
+        Post post = await _postRepository.GetByIdAsync(id.GetValueOrDefault());
+        if (post.AuthorId == authenticatedUserId)
         {
-            Post post = _mapper.Map<Post>(updatedPost);
-            post.UserId = authenticatedUserId;
+            post.Content = updatedPost.Content;
             await _postRepository.UpdateAsync(id.GetValueOrDefault(), post);
         }
         else throw new UnauthorizedAccessException("Você não está autorizado a executar essa ação.");
@@ -49,15 +49,9 @@ public class PostServices : IPostServices
         Guard.Against.Null(id, nameof(id), "Campo ID não pode ser vazio.");
 
         Post post = await _postRepository.GetByIdAsync(id.GetValueOrDefault());
-        if (post.UserId == _contextAccessor.GetAuthenticatedUserId().GetValueOrDefault()) 
+        if (post.AuthorId == _contextAccessor.GetAuthenticatedUserId().GetValueOrDefault()) 
             await _postRepository.RemoveAsync(id.GetValueOrDefault());
         else throw new UnauthorizedAccessException("Você não está autorizado a executar essa ação.");
 
-    }
-
-    private void EnsurePropertiesIsValid(CreatePostInputModel createdPost)
-    {
-        Guard.Against.Null(createdPost, nameof(createdPost), "Não é possível criar ou tornar uma publicação vazia.");
-        Guard.Against.Null(createdPost.Content, nameof(createdPost.Content), "Insira um texto válido na publicação.");
     }
 }

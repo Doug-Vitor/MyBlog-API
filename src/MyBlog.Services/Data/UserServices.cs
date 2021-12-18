@@ -19,18 +19,13 @@ public class UserServices : IUserServices
 
     public async Task<int> SignUpAsync(CreateUserInputModel inputModel)
     {
-        Guard.Against.Null(inputModel, nameof(inputModel), "Por favor, insira dados válidos.");
-        Guard.Against.Null(inputModel.Username, nameof(inputModel.Username), "Por favor, insira um nome de usuário válido.");
-        Guard.Against.Null(inputModel.Email, nameof(inputModel.Email), "Por favor, insira um e-mail válido.");
-        Guard.Against.Null(inputModel.Password, nameof(inputModel.Password), "Por favor, insira uma senha válida.");
+        inputModel.EnsureFieldsIsValid();
         return await _userRepository.SignUpAsync(MapToUser(inputModel));
     }
 
     public async Task<int?> SignInAsync(SignInUserModel signInModel)
     {
-        Guard.Against.Null(signInModel, nameof(signInModel), "Por favor, insira dados válidos.");
-        Guard.Against.Null(signInModel.Username, nameof(signInModel.Username), "Por favor, insira um nome de usuário válido.");
-        Guard.Against.Null(signInModel.Password, nameof(signInModel.Password), "Por favor, insira uma senha válida.");
+        signInModel.EnsureFieldsIsValid();
         return await _userRepository.SignInAsync(signInModel);
     }
     public async Task<UserDTO> GetAuthenticatedUserAsync()
@@ -38,12 +33,9 @@ public class UserServices : IUserServices
 
     public async Task UpdateAuthenticatedUserAsync(CreateUserInputModel inputModel)
     {
-        Guard.Against.Null(inputModel, nameof(inputModel), "Por favor, insira dados válidos.");
-        Guard.Against.Null(inputModel.Username, nameof(inputModel.Username), "Por favor, insira um nome de usuário válido.");
-        Guard.Against.Null(inputModel.Email, nameof(inputModel.Email), "Por favor, insira um e-mail válido.");
-
         if (string.IsNullOrWhiteSpace(inputModel.Password))
             inputModel.Password = (await _userRepository.GetByIdAsync(_contextAccessor.GetAuthenticatedUserId().GetValueOrDefault())).PasswordHash;
+        inputModel.EnsureFieldsIsValid();
         
         await _userRepository.UpdateAsync(_contextAccessor.GetAuthenticatedUserId().GetValueOrDefault(), MapToUser(inputModel));
     }

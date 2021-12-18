@@ -21,9 +21,9 @@ namespace MyBlog.Api.Controllers
             try
             {
                 int postId = await _postServices.InsertAsync(createdPost);
-                return CreatedAtRoute(nameof(GetById), new { id = postId }, await _postServices.GetByIdAsync(postId));
+                return CreatedAtAction(nameof(GetById), new { id = postId }, await _postServices.GetByIdAsync(postId));
             }
-            catch (ArgumentNullException error)
+            catch (Exception error) when (error is ArgumentException || error is ArgumentNullException)
             {
                 return BadRequest(new ErrorDTO(error.Message));
             }
@@ -58,7 +58,7 @@ namespace MyBlog.Api.Controllers
         /// Retorna todas as publicações.
         /// </summary>
         /// <returns></returns>
-        [ProducesResponseType(200, Type =typeof(IEnumerable<Post>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<PostDTO>))]
         [HttpGet]
         [ProducesResponseType(500, Type = typeof(ErrorDTO))]
         public async Task<IActionResult> GetAll() => Ok(await _postServices.GetAllAsync());
@@ -67,9 +67,10 @@ namespace MyBlog.Api.Controllers
         /// Atualiza a publicação correspondente ao ID fornecido.
         /// </summary>
         /// <param name="id">O ID da publicação a ser excluída.</param>
-        /// <param name="updatedPost">A publicação a ser atualizada.</param>
+        /// <param name="updatedPost">A publicação com dados atualizados</param>
         /// <returns></returns>
         [ProducesResponseType(200)]
+        [ProducesResponseType(401, Type = typeof(ErrorDTO))]
         [ProducesResponseType(500, Type = typeof(ErrorDTO))]
         [HttpPatch("{id}")]
         public async Task<IActionResult> Update([FromRoute] int? id, [FromBody] CreatePostInputModel updatedPost)
@@ -79,9 +80,13 @@ namespace MyBlog.Api.Controllers
                 await _postServices.UpdateAsync(id, updatedPost);
                 return Ok();
             }
-            catch (ArgumentNullException error)
+            catch (Exception error) when (error is ArgumentException || error is ArgumentNullException)
             {
                 return BadRequest(new ErrorDTO(error.Message));
+            }
+            catch (UnauthorizedAccessException error)
+            {
+                return Unauthorized(new ErrorDTO(error.Message));
             }
         }
 
@@ -91,6 +96,7 @@ namespace MyBlog.Api.Controllers
         /// <param name="id">O ID da publicação a ser excluída.</param>
         /// <returns></returns>
         [ProducesResponseType(200)]
+        [ProducesResponseType(401, Type = typeof(ErrorDTO))]
         [ProducesResponseType(500, Type = typeof(ErrorDTO))]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove([FromRoute] int? id)
@@ -100,9 +106,13 @@ namespace MyBlog.Api.Controllers
                 await _postServices.RemoveAsync(id);
                 return Ok();
             }
-            catch (UnauthorizedAccessException error)
+            catch (ArgumentNullException error)
             {
                 return BadRequest(new ErrorDTO(error.Message));
+            }
+            catch (UnauthorizedAccessException error)
+            {
+                return Unauthorized(new ErrorDTO(error.Message));
             }
         }
     }

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace MyBlog.CoreInfrastructure.Data.Context.Migrations
+namespace MyBlog.CoreInfrastructure.Migrations
 {
     public partial class InitialMigration : Migration
     {
@@ -15,7 +15,7 @@ namespace MyBlog.CoreInfrastructure.Data.Context.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "ntext", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    AuthorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
