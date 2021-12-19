@@ -27,21 +27,7 @@ namespace BetterNews.Api.Controllers
         [HttpGet("id")]
         public async Task<IActionResult> GetById(int? id)
         {
-            try
-            {
-                return Ok(await _userServices.GetByIdAsync(id));
-            }
-            catch (ArgumentNullException error)
-            {
-                ModelState.AddModelError(string.Empty, error.Message);
-            }
-            catch (NotFoundException error)
-            {
-                return NotFound(new ErrorDTO(error.Message));
-            }
-
-            return BadRequest(new ErrorDTO(ModelState.Values.SelectMany(prop => prop.Errors)
-                .Select(prop => prop.ErrorMessage).ToList()));
+            return Ok(await _userServices.GetByIdAsync(id));
         }
 
         /// <summary>
@@ -54,26 +40,14 @@ namespace BetterNews.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> SignUp([FromBody] CreateUserInputModel inputModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    int userId = await _userServices.SignUpAsync(inputModel);
-                    return CreatedAtAction(nameof(GetById), new { id = userId }, 
-                        new LoginResultDTO(inputModel.Username, await _tokenServices.GenerateTokenAsync(userId)));
-                }
-            }
-            catch (Exception error) when (error is ArgumentException || error is ArgumentNullException)
-            {
-                ModelState.AddModelError(string.Empty, error.Message);
-            }
-            catch (FieldInUseException error)
-            {
-                ModelState.AddModelError(string.Empty, error.Message);
+                int userId = await _userServices.SignUpAsync(inputModel);
+                return CreatedAtAction(nameof(GetById), new { id = userId },
+                    new LoginResultDTO(inputModel.Username, await _tokenServices.GenerateTokenAsync(userId)));
             }
 
-            return BadRequest(new ErrorDTO(ModelState.Values.SelectMany(prop => prop.Errors)
-                .Select(prop => prop.ErrorMessage).ToList()));
+            return DefaultInternalServerErrorResult();
         }
 
         /// <summary>
@@ -86,26 +60,14 @@ namespace BetterNews.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> SignIn([FromBody] SignInUserModel signInModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    int? userId = await _userServices.SignInAsync(signInModel);
-                    return Ok(new LoginResultDTO(signInModel.Username, await _tokenServices
-                        .GenerateTokenAsync(userId)));
-                }
-            }
-            catch (Exception error) when (error is ArgumentException || error is ArgumentNullException)
-            {
-                ModelState.AddModelError(string.Empty, error.Message);
-            }
-            catch (SignInFailException error)
-            {
-                ModelState.AddModelError(string.Empty, error.Message);
+                int? userId = await _userServices.SignInAsync(signInModel);
+                return Ok(new LoginResultDTO(signInModel.Username, await _tokenServices
+                    .GenerateTokenAsync(userId)));
             }
 
-            return BadRequest(new ErrorDTO(ModelState.Values.SelectMany(prop => prop.Errors)
-                .Select(prop => prop.ErrorMessage).ToList()));
+            return DefaultInternalServerErrorResult();
         }
 
         [ProducesResponseType(200)]
@@ -137,21 +99,13 @@ namespace BetterNews.Api.Controllers
         [HttpPatch("Update/")]
         public async Task<IActionResult> AuthenticatedUser([FromBody] CreateUserInputModel inputModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    await _userServices.UpdateAuthenticatedUserAsync(inputModel);
-                    return Ok();
-                }
-            }
-            catch (ArgumentNullException error)
-            {
-                ModelState.AddModelError(string.Empty, error.Message);
+                await _userServices.UpdateAuthenticatedUserAsync(inputModel);
+                return Ok();
             }
 
-            return BadRequest(new ErrorDTO(ModelState.Values.SelectMany(prop => prop.Errors)
-                .Select(prop => prop.ErrorMessage).ToList()));
+            return DefaultInternalServerErrorResult();
         }
     }
 }

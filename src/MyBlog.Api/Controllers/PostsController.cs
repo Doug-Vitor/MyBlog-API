@@ -18,15 +18,13 @@ namespace MyBlog.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert([FromBody] CreatePostInputModel createdPost)
         {
-            try
+            if (ModelState.IsValid)
             {
                 int postId = await _postServices.InsertAsync(createdPost);
                 return CreatedAtAction(nameof(GetById), new { id = postId }, await _postServices.GetByIdAsync(postId));
             }
-            catch (Exception error) when (error is ArgumentException || error is ArgumentNullException)
-            {
-                return BadRequest(new ErrorDTO(error.Message));
-            }
+
+            return DefaultInternalServerErrorResult();
         }
 
         /// <summary>
@@ -40,18 +38,7 @@ namespace MyBlog.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int? id)
         {
-            try
-            {
-                return Ok(await _postServices.GetByIdAsync(id));
-            }
-            catch (ArgumentNullException error)
-            {
-                return BadRequest(new ErrorDTO(error.Message));
-            }
-            catch (NotFoundException error)
-            {
-                return NotFound(new ErrorDTO(error.Message));
-            }
+            return Ok(await _postServices.GetByIdAsync(id));
         }
 
         /// <summary>
@@ -75,19 +62,8 @@ namespace MyBlog.Api.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> Update([FromRoute] int? id, [FromBody] CreatePostInputModel updatedPost)
         {
-            try
-            {
-                await _postServices.UpdateAsync(id, updatedPost);
-                return Ok();
-            }
-            catch (Exception error) when (error is ArgumentException || error is ArgumentNullException)
-            {
-                return BadRequest(new ErrorDTO(error.Message));
-            }
-            catch (UnauthorizedAccessException error)
-            {
-                return Unauthorized(new ErrorDTO(error.Message));
-            }
+            await _postServices.UpdateAsync(id, updatedPost);
+            return Ok();
         }
 
         /// <summary>
@@ -101,19 +77,8 @@ namespace MyBlog.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove([FromRoute] int? id)
         {
-            try
-            {
-                await _postServices.RemoveAsync(id);
-                return Ok();
-            }
-            catch (ArgumentNullException error)
-            {
-                return BadRequest(new ErrorDTO(error.Message));
-            }
-            catch (UnauthorizedAccessException error)
-            {
-                return Unauthorized(new ErrorDTO(error.Message));
-            }
+            await _postServices.RemoveAsync(id);
+            return Ok();
         }
     }
 }
