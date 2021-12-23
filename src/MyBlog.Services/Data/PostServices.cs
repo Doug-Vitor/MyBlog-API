@@ -4,14 +4,18 @@ using AutoMapper;
 public class PostServices : IPostServices
 {
     private readonly IBaseRepository<Post> _postRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly HttpContextAccessorHelper _contextAccessor;
 
-    public PostServices(IBaseRepository<Post> postRepository, HttpContextAccessorHelper contextAccessor, IMapper mapper) => 
-        (_postRepository, _contextAccessor, _mapper) = (postRepository, contextAccessor, mapper);
+    public PostServices(IBaseRepository<Post> postRepository, IUserRepository userRepository, HttpContextAccessorHelper contextAccessor, IMapper mapper) => 
+        (_postRepository, _userRepository, _contextAccessor, _mapper) = (postRepository, userRepository, contextAccessor, mapper);
 
     public async Task<int> InsertAsync(CreatePostInputModel createdPost)
     {
+        if (createdPost.CreatedAt == default || !createdPost.CreatedAt.HasValue)
+            createdPost.CreatedAt = DateTime.UtcNow;
+
         createdPost.EnsureFieldsIsValid();
 
         Post post = _mapper.Map<Post>(createdPost);
@@ -27,7 +31,14 @@ public class PostServices : IPostServices
         return _mapper.Map<PostDTO>(await _postRepository.GetByIdAsync(id.GetValueOrDefault()));
     }
 
-    public async Task<IEnumerable<PostDTO>> GetAllAsync() => _mapper.Map<IEnumerable<PostDTO>>(await _postRepository.GetAllAsync());
+    public async Task<IEnumerable<PostDTO>> GetAllAsync()
+    {
+        IEnumerable<PostDTO> posts = _mapper.Map<IEnumerable<PostDTO>>(await _postRepository.GetAllAsync());
+        foreach (PostDTO post in posts)
+            post.AuthorUsername = (await _userRepository.GetByIdAsync(post.AuthorId)).Username;
+
+        return posts;
+    }
 
     public async Task UpdateAsync(int? id, CreatePostInputModel updatedPost)
     {
