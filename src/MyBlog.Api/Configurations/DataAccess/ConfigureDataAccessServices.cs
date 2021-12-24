@@ -2,7 +2,7 @@
 
 public static class ConfigureDataAccessServices
 {
-    public static IServiceCollection ConfigureDataAccess(this IServiceCollection services, ConfigurationManager configurations)
+    internal static IServiceCollection ConfigureDataAccess(this IServiceCollection services, ConfigurationManager configurations)
     {
         AddDbContext(services, configurations);
         AddCoreDataServices(services);

@@ -5,7 +5,7 @@ using System.Text;
 
 public static class ConfigureAuthenticationServices
 {
-    public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, ConfigurationManager configurations)
+    internal static IServiceCollection ConfigureAuthentication(this IServiceCollection services, ConfigurationManager configurations)
     {
         services.Configure<SecretsConfiguration>(configurations.GetSection(nameof(SecretsConfiguration)));
         services.AddAuthentication(options =>

@@ -4,6 +4,7 @@ using System.Text.Json;
 public class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate _next;
+
     private static Dictionary<Type, HttpStatusCode> SupportedExceptionsWithStatusCode = new()
     {
         { typeof(ArgumentException), HttpStatusCode.BadRequest },
@@ -16,7 +17,7 @@ public class ErrorHandlingMiddleware
 
     public ErrorHandlingMiddleware(RequestDelegate next) => _next = next;
 
-    public async Task Invoke(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
