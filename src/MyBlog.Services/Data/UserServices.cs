@@ -17,6 +17,8 @@ public class UserServices : IUserServices
             throw new NotFoundException("Não foi possível encontrar um usuário correspondente ao ID fornecido.");
     }
 
+    public async Task<string> GetUserNameByIdAsync(int? id) => (await GetByIdAsync(id)).Username;
+
     public async Task<int> SignUpAsync(CreateUserInputModel inputModel)
     {
         inputModel.EnsureFieldsIsValid();

@@ -5,14 +5,13 @@ public class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate _next;
 
-    private static Dictionary<Type, HttpStatusCode> SupportedExceptionsWithStatusCode = new()
+    private static Dictionary<Type, int> SupportedExceptionsWithStatusCode = new()
     {
-        { typeof(ArgumentException), HttpStatusCode.BadRequest },
-        { typeof(ArgumentNullException), HttpStatusCode.BadRequest },
-        { typeof(FieldInUseException), HttpStatusCode.BadRequest },
-        { typeof(UnauthorizedAccessException), HttpStatusCode.Unauthorized },
-        { typeof(NotFoundException), HttpStatusCode.NotFound },
-        { default, HttpStatusCode.InternalServerError }
+        { typeof(ArgumentException), (int)HttpStatusCode.BadRequest },
+        { typeof(ArgumentNullException), (int)HttpStatusCode.BadRequest },
+        { typeof(FieldInUseException), (int)HttpStatusCode.BadRequest },
+        { typeof(UnauthorizedAccessException), (int)HttpStatusCode.Unauthorized },
+        { typeof(NotFoundException), (int)HttpStatusCode.NotFound },
     };
 
     public ErrorHandlingMiddleware(RequestDelegate next) => _next = next;
@@ -32,7 +31,7 @@ public class ErrorHandlingMiddleware
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)SupportedExceptionsWithStatusCode.GetValueOrDefault(exception.GetType());
+        context.Response.StatusCode = SupportedExceptionsWithStatusCode.GetValueOrDefault(exception.GetType());
         return context.Response.WriteAsync(JsonSerializer.Serialize<ErrorDTO>(new(exception.Message)));
     }
 }

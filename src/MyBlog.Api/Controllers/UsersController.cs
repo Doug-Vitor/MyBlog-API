@@ -47,7 +47,7 @@ namespace BetterNews.Api.Controllers
                     new LoginResultDTO(inputModel.Username, await _tokenServices.GenerateTokenAsync(userId)));
             }
 
-            return DefaultInternalServerErrorResult();
+            return DefaultBadRequestResult();
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace BetterNews.Api.Controllers
                     .GenerateTokenAsync(userId)));
             }
 
-            return DefaultInternalServerErrorResult();
+            return DefaultBadRequestResult();
         }
 
         [ProducesResponseType(200)]
@@ -105,7 +105,7 @@ namespace BetterNews.Api.Controllers
                 return Ok();
             }
 
-            return DefaultInternalServerErrorResult();
+            return DefaultBadRequestResult();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace MyBlog.Api.Controllers
                 return CreatedAtAction(nameof(GetById), new { id = postId }, await _postServices.GetByIdAsync(postId));
             }
 
-            return DefaultInternalServerErrorResult();
+            return DefaultBadRequestResult();
         }
 
         /// <summary>
@@ -36,10 +36,7 @@ namespace MyBlog.Api.Controllers
         [ProducesResponseType(404, Type = typeof(ErrorDTO))]
         [ProducesResponseType(500, Type = typeof(ErrorDTO))]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int? id)
-        {
-            return Ok(await _postServices.GetByIdAsync(id));
-        }
+        public async Task<IActionResult> GetById([FromRoute] int? id) => Ok(await _postServices.GetByIdAsync(id));
 
         /// <summary>
         /// Retorna todas as publicações.
