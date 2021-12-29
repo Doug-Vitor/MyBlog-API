@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-public class User : BaseEntity
+﻿public class User : BaseEntity
 {
     public string Username { get; set; }
     public string PasswordHash { get; set; }

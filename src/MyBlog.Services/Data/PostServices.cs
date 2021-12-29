@@ -4,12 +4,12 @@ using AutoMapper;
 public class PostServices : IPostServices
 {
     private readonly IBaseRepository<Post> _postRepository;
-    private readonly IUserServices _userServices;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly HttpContextAccessorHelper _contextAccessor;
 
-    public PostServices(IBaseRepository<Post> postRepository, IUserServices userServices, HttpContextAccessorHelper contextAccessor, IMapper mapper) => 
-        (_postRepository, _userServices, _contextAccessor, _mapper) = (postRepository, userServices, contextAccessor, mapper);
+    public PostServices(IBaseRepository<Post> postRepository, IUserRepository userRepository, HttpContextAccessorHelper contextAccessor, IMapper mapper) => 
+        (_postRepository, _userRepository, _contextAccessor, _mapper) = (postRepository, userRepository, contextAccessor, mapper);
 
     public async Task<int> InsertAsync(CreatePostInputModel createdPost)
     {
@@ -28,19 +28,22 @@ public class PostServices : IPostServices
     public async Task<PostDTO> GetByIdAsync(int? id)
     {
         Guard.Against.Null(id, nameof(id), "Campo ID não pode ser vazio.");
-        PostDTO post = _mapper.Map<PostDTO>(await _postRepository.GetByIdAsync(id.GetValueOrDefault()));
-        post.AuthorUsername = await _userServices.GetUserNameByIdAsync(post.AuthorId);
+        Post post = await _postRepository.GetByIdAsync(id.GetValueOrDefault());
 
-        return post;
+        PostDTO mappedPost = _mapper.Map<PostDTO>(post);
+        mappedPost.AuthorInfos = _mapper.Map<PostInteractorsDTO>(await _userRepository.GetByIdAsync(post.AuthorId));
+        return mappedPost;
     }
 
     public async Task<IEnumerable<PostDTO>> GetAllAsync()
     {
-        IEnumerable<PostDTO> posts = _mapper.Map<IEnumerable<PostDTO>>(await _postRepository.GetAllAsync());
-        foreach (PostDTO post in posts)
-            post.AuthorUsername = await _userServices.GetUserNameByIdAsync(post.AuthorId);
+        IEnumerable<Post> posts = await _postRepository.GetAllAsync();
 
-        return posts;
+        IEnumerable<PostDTO> mappedPosts = _mapper.Map<IEnumerable<PostDTO>>(posts);
+        for (int count = 0; count < posts.Count(); count++)
+            mappedPosts.ElementAtOrDefault(count).AuthorInfos = _mapper.Map<PostInteractorsDTO>(await _userRepository.GetByIdAsync(posts.ElementAtOrDefault(count).AuthorId));
+
+        return mappedPosts;
     }
 
     public async Task UpdateAsync(int? id, CreatePostInputModel updatedPost)
@@ -48,9 +51,8 @@ public class PostServices : IPostServices
         Guard.Against.Null(id, nameof(id), "Campo ID não pode ser vazio.");
         updatedPost.EnsureFieldsIsValid();
 
-        int authenticatedUserId = _contextAccessor.GetAuthenticatedUserId().GetValueOrDefault();
         Post post = await _postRepository.GetByIdAsync(id.GetValueOrDefault());
-        if (post.AuthorId == authenticatedUserId)
+        if (post.AuthorId == _contextAccessor.GetAuthenticatedUserId().GetValueOrDefault())
         {
             post.Content = updatedPost.Content;
             await _postRepository.UpdateAsync(id.GetValueOrDefault(), post);

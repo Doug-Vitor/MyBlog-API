@@ -31,7 +31,15 @@ public class ErrorHandlingMiddleware
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = SupportedExceptionsWithStatusCode.GetValueOrDefault(exception.GetType());
-        return context.Response.WriteAsync(JsonSerializer.Serialize<ErrorDTO>(new(exception.Message)));
+        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+        Type exceptionType = exception.GetType();
+        if (SupportedExceptionsWithStatusCode.ContainsKey(exceptionType))
+        {
+            context.Response.StatusCode = SupportedExceptionsWithStatusCode.GetValueOrDefault(exceptionType);
+            return context.Response.WriteAsync(JsonSerializer.Serialize<ErrorDTO>(new(exception.Message)));
+        }
+
+        return context.Response.WriteAsync(JsonSerializer.Serialize<ErrorDTO>(new("Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.")));
     }
 }

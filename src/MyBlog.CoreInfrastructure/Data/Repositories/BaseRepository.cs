@@ -13,7 +13,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     }
 
     public async Task<T> GetByIdAsync(int id) => await _context.Set<T>().FirstOrDefaultAsync(prop => prop.Id == id)
-        ?? throw new NotFoundException("Não foi possível encontrar uma publicação correspondente ao ID fornecido.");
+        ?? throw new NotFoundException();
 
     public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync();
 
