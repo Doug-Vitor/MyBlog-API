@@ -59,7 +59,7 @@
 <h3>Referências:</h3>
 <ul>
   <li>Autenticação e autorização com Bearer e JWT: <a href="https://balta.io/blog/aspnet-5-autenticacao-autorizacao-bearer-jwt">Clique aqui!</a> | <a href="https://www.youtube.com/watch?v=vAUXU0YIWlU">Clique aqui!</a></li>
-  <li>Validações com Regex<a href="https://stackoverflow.com/questions/34715501/validating-password-using-regex-c-sharp/43085890">Clique aqui!</a></li>
-  <li>Validações customizadas com atributos personalizados<a href="https://www.youtube.com/watch?v=kgzc_gw2pi8">Clique aqui!</a></li>
-  <li>Tratamento global de erros e exceções<a href="https://henriquemauri.net/tratamento-global-erros-no-net-6/">Clique aqui!</a></li>
+  <li>Validações com Regex: <a href="https://stackoverflow.com/questions/34715501/validating-password-using-regex-c-sharp/43085890">Clique aqui!</a></li>
+  <li>Validações customizadas com atributos personalizados: <a href="https://www.youtube.com/watch?v=kgzc_gw2pi8">Clique aqui!</a></li>
+  <li>Tratamento global de erros e exceções: <a href="https://henriquemauri.net/tratamento-global-erros-no-net-6/">Clique aqui!</a></li>
 </ul>
